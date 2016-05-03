@@ -17,12 +17,12 @@ public class LeastRecentlyUsed implements ReplacementAlgorithm {
     }
 
     @Override
-    public boolean execute(Process process, int timeStep) {
+    public Result execute(Process process, int timeStep) {
         Frame frame = new Frame(process, timeStep);
         if(frames.contains(frame)) {
             System.out.println("no page fault. accessed frame " + frames.indexOf(frame));
             frames.get(frames.indexOf(frame)).lastUsed = currentProcess;
-            return true;
+            return null;
         } else {
             if (frames.size() < frameSize) {
                 frames.add(frame);
@@ -34,7 +34,7 @@ public class LeastRecentlyUsed implements ReplacementAlgorithm {
                 frames.add(frame);
             }
         }
-        return false;
+        return null;
     }
 
     private Frame getLastUsedFrame() {

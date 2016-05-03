@@ -16,11 +16,11 @@ public class FirstInFirstOut implements ReplacementAlgorithm {
     }
 
     @Override
-    public boolean execute(Process process, int timestamp) {
+    public Result execute(Process process, int timestamp) {
         Frame frame = new Frame(process, timestamp);
         if(frames.contains(frame)) {
             System.out.println("no page fault. accessed frame " + frames.indexOf(frame));
-            return true;
+            return null;
         } else {
             if (frames.size() < frameSize) {
                 frames.add(frame);
@@ -32,7 +32,7 @@ public class FirstInFirstOut implements ReplacementAlgorithm {
                 frames.add(frame);
             }
         }
-        return false;
+        return null;
     }
 
     private Frame getLastUsedFrame() {

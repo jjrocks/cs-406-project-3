@@ -14,7 +14,7 @@ public class FrameLoader {
 
     public void run() {
 		for (Process process : processes) {
-			if (!algorithm.execute(process, timeStamp)) {
+			if (!algorithm.execute(process, timeStamp).pageFault) {
 				pageFaults += 1;
 			}
 			timeStamp++;

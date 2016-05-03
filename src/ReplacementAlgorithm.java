@@ -1,4 +1,4 @@
 public interface ReplacementAlgorithm {
 
-	public abstract boolean execute(Process process, int timeStamp);
+	public abstract Result execute(Process process, int timeStamp);
 }

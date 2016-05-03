@@ -16,15 +16,15 @@ public class SecondChance implements ReplacementAlgorithm {
     }
 
     @Override
-    public boolean execute(Process process, int timestamp) {
+    public Result execute(Process process, int timestamp) {
         Frame frame = new Frame(process);
         if (frames.size() < frameSize) {
             frames.add(frame);
-            return true;
+            return null;
         } else {
             if (frames.contains(frame)) {
                 frame.overwrite = false;
-                return true;
+                return null;
             } else {
                 boolean frameFound = false;
                 while (!frameFound) {
@@ -32,7 +32,7 @@ public class SecondChance implements ReplacementAlgorithm {
                 }
             }
         }
-        return false;
+        return null;
     }
 
     private class Frame {
