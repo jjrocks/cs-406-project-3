@@ -3,9 +3,9 @@
  */
 public class Process {
 
-    int pid;
-    int address;
-    boolean write;
+    private int pid;
+    private int address;
+    private boolean write;
 
     public Process(int pid, int address, boolean write) {
         this.pid = pid;
