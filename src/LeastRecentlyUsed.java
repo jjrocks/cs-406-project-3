@@ -3,14 +3,14 @@ import java.util.*;
 /**
  * Created by JJ on 5/2/2016.
  */
-public class FirstInFirstOut implements ReplacementAlgorithm {
+public class LeastRecentlyUsed implements ReplacementAlgorithm {
 
     ArrayList<Process> processes;
     ArrayList<Frame> frames;
     int frameSize = 0;
     int currentProcess = 0;
 
-    public FirstInFirstOut(ArrayList<Process> processes, int frameSize) {
+    public LeastRecentlyUsed(ArrayList<Process> processes, int frameSize) {
         this.processes = processes;
         this.frameSize = frameSize;
         frames = new ArrayList<>(frameSize);
@@ -23,6 +23,7 @@ public class FirstInFirstOut implements ReplacementAlgorithm {
         currentProcess++;
         if(frames.contains(frame)) {
             System.out.println("no page fault. accessed frame " + frames.indexOf(frame));
+            frames.get(frames.indexOf(frame)).lastUsed = currentProcess;
             return true;
         } else {
             if (frames.size() < frameSize) {

@@ -24,6 +24,18 @@ public class Process {
 
     }
 
+    public int getPid() {
+        return pid;
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
+    public boolean isWrite() {
+        return write;
+    }
+
     @Override
     public int hashCode() {
         return pid;
