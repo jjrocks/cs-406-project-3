@@ -12,4 +12,20 @@ public class Process {
         this.address = address;
         this.write = write;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Process process = (Process) o;
+
+        return pid == process.pid;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return pid;
+    }
 }

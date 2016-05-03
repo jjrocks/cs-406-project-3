@@ -1,4 +1,25 @@
+import java.util.ArrayList;
+
 public class FrameLoader {
+
+	int pageFaults = 0;
+	int timeStamp = 0;
+	ArrayList<Process> processes;
+	ReplacementAlgorithm algorithm;
+
+    public FrameLoader(ReplacementAlgorithm algorithm, ArrayList<Process> processes) {
+        this.algorithm = algorithm;
+        this.processes = processes;
+    }
+
+    public void run() {
+		for (Process process : processes) {
+			if (algorithm.execute()) {
+				pageFaults += 1;
+			}
+		}
+        System.out.println("Page faults: " + pageFaults);
+	}
 	
 	public static void main(String[] args) {
 		//Your main function should accept three strings. 
@@ -29,7 +50,10 @@ public class FrameLoader {
 			}
 
 			//get list of memory accesses
-			memAccesses = TextReader.parseText(args[2]);
+			memAccesses = TextReader.processText(args[2]);
+            FrameLoader frameLoader = new FrameLoader(new FirstInFirstOut(memAccesses, 5), memAccesses);
+            frameLoader.run();
+
 		} 
 		else {
 			System.out.println("Invalid input. Please enter 1) the replacecment algorithm, "+
