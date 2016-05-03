@@ -8,19 +8,16 @@ public class FirstInFirstOut implements ReplacementAlgorithm {
     ArrayList<Process> processes;
     ArrayList<Frame> frames;
     int frameSize = 0;
-    int currentProcess = 0;
 
-    public FirstInFirstOut(ArrayList<Process> processes, int frameSize) {
-        this.processes = processes;
+    public FirstInFirstOut(int frameSize) {
+        processes = new ArrayList<>();
         this.frameSize = frameSize;
         frames = new ArrayList<>(frameSize);
     }
 
     @Override
-    public boolean execute() {
-        Process process = processes.get(currentProcess);
-        Frame frame = new Frame(process, currentProcess);
-        currentProcess++;
+    public boolean execute(Process process, int timestamp) {
+        Frame frame = new Frame(process, timestamp);
         if(frames.contains(frame)) {
             System.out.println("no page fault. accessed frame " + frames.indexOf(frame));
             return true;

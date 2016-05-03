@@ -10,17 +10,15 @@ public class LeastRecentlyUsed implements ReplacementAlgorithm {
     int frameSize = 0;
     int currentProcess = 0;
 
-    public LeastRecentlyUsed(ArrayList<Process> processes, int frameSize) {
-        this.processes = processes;
+    public LeastRecentlyUsed(int frameSize) {
+        processes = new ArrayList<>();
         this.frameSize = frameSize;
         frames = new ArrayList<>(frameSize);
     }
 
     @Override
-    public boolean execute() {
-        Process process = processes.get(currentProcess);
-        Frame frame = new Frame(process, currentProcess);
-        currentProcess++;
+    public boolean execute(Process process, int timeStep) {
+        Frame frame = new Frame(process, timeStep);
         if(frames.contains(frame)) {
             System.out.println("no page fault. accessed frame " + frames.indexOf(frame));
             frames.get(frames.indexOf(frame)).lastUsed = currentProcess;

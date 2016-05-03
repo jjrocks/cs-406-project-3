@@ -14,9 +14,10 @@ public class FrameLoader {
 
     public void run() {
 		for (Process process : processes) {
-			if (!algorithm.execute()) {
+			if (!algorithm.execute(process, timeStamp)) {
 				pageFaults += 1;
 			}
+			timeStamp++;
 		}
         System.out.println("Page faults: " + pageFaults);
 	}
@@ -51,7 +52,7 @@ public class FrameLoader {
 
 			//get list of memory accesses
 			memAccesses = TextReader.processText(args[2]);
-            FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(memAccesses, 2), memAccesses);
+            FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
             frameLoader.run();
 
 		} 
