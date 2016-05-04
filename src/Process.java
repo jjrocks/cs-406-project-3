@@ -5,12 +5,14 @@ public class Process {
 
     private int pid;
     private int address;
+    private int pageNumber;
     private boolean write;
 
     public Process(int pid, int address, boolean write) {
         this.pid = pid;
         this.address = address;
         this.write = write;
+        this.pageNumber = address/FrameLoader.PAGE_SIZE;
     }
 
     @Override
@@ -19,7 +21,7 @@ public class Process {
         if (o == null || getClass() != o.getClass()) return false;
 
         Process process = (Process) o;
-        return pid == process.pid && address/FrameLoader.PAGE_SIZE == address/FrameLoader.PAGE_SIZE;
+        return pid == process.pid && process.pageNumber == pageNumber;
 
     }
 
@@ -33,6 +35,10 @@ public class Process {
 
     public boolean isWrite() {
         return write;
+    }
+
+    public int getPageNumber() {
+        return pageNumber;
     }
 
     @Override

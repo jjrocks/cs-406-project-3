@@ -1,7 +1,7 @@
 import java.util.*;
 import java.lang.*;
 
-public class Optimal impements ReplacementAlgorithm {
+public class Optimal implements ReplacementAlgorithm {
 
 	ArrayList<Process> memAccesses;
 	ArrayList<Frame> frames;
@@ -28,16 +28,16 @@ public class Optimal impements ReplacementAlgorithm {
 		Frame frame = new Frame(proc_id, page_num);
 
 		int frameNum = frames.indexOf(frame);
-		int numFrames = frames.size()
+		int numFrames = frames.size();
 
 		if(frameNum > -1) {
 			//no page fault
-			return new Result(page_num, proc_id, frameNum, false);
+			return new Result(process, frameNum, false, false, false);
 		}
 		else if(numFrames < maxFrames) {
 			//page fault, but there are empty frames
 			frames.add(frame);
-			return new Result(page_num, proc_id, numFrames, true);
+			return new Result(process, frameNum, true, false, false);
 		}
 		else {
 			//page fault, and we must replace a frame
@@ -47,8 +47,8 @@ public class Optimal impements ReplacementAlgorithm {
 				Frame f = frames.get(i);
 				int nextUse = Integer.MAX_VALUE;
 				for(int j=curProcess+1; j<memAccesses.size(); j++) {
-					Proccess p = memAccesses.get(j);
-					if(p.getPid() == f.proc_id && p.getPageNumber() == f.page_num) {
+					Process p = memAccesses.get(j);
+					if(p.getPid() == f.procId && p.getPageNumber() == f.pageNum) {
 						nextUse = j;
 						break;
 					}
@@ -58,19 +58,19 @@ public class Optimal impements ReplacementAlgorithm {
 					farthestTimeUntilNextUse = nextUse;
 				}
 			}
-
 			frames.set(frameNumToReplace, frame);
-			return new Result(page_num, proc_id, frameNumToReplace, true);
+			// TODO: This currently does not check for if the old frame needs to be written into memory.
+			return new Result(process, frames.indexOf(frame), true, true, true);
 		}
 	}
 
 	private class Frame {
-		public int proc_id;
-		public int page_num;
+		public int procId;
+		public int pageNum;
 
-		public Frame (int pid, pg_num) {
-			proc_id = pid;
-			page_num = pg_num;
+		public Frame (int pid, int pg_num) {
+			procId = pid;
+			pageNum = pg_num;
 		}
 
 		@Override
@@ -80,7 +80,7 @@ public class Optimal impements ReplacementAlgorithm {
 
             Frame frame = (Frame) o;
 
-            if(this.proc_id == frame.proc_id && this.page_num == frame.page_num)
+            if(this.procId == frame.procId && this.pageNum == frame.pageNum)
             {
             	return true;
             }
