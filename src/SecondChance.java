@@ -5,13 +5,11 @@ import java.util.ArrayList;
  */
 public class SecondChance implements ReplacementAlgorithm {
 
-    ArrayList<Process> processes;
     ArrayList<Frame> frames;
     int currentProcess = 0;
     int frameSize = 0;
 
     public SecondChance(int frameSize) {
-        processes = new ArrayList<>();
         this.frameSize = frameSize;
     }
 
@@ -29,8 +27,15 @@ public class SecondChance implements ReplacementAlgorithm {
                 frames.add(frame);
             } else {
                 boolean frameFound = false;
+                isReplacement = true;
                 while (!frameFound) {
-
+                    if (frames.get(currentProcess).overwrite) {
+                        writeToMemory = frames.remove(currentProcess).process.isWrite();
+                        frames.add(frame);
+                        frameFound = true;
+                    } else {
+                        frames.get(currentProcess).overwrite = false;
+                    }
                     currentProcess = currentProcess++ % frameSize;
                 }
             }
