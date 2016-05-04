@@ -10,7 +10,7 @@ public class SecondChance implements ReplacementAlgorithm {
     int currentProcess = 0;
     int frameSize = 0;
 
-    public SecondChance(ArrayList<Process> processes, int frameSize) {
+    public SecondChance(int frameSize) {
         processes = new ArrayList<>();
         this.frameSize = frameSize;
     }
@@ -18,21 +18,24 @@ public class SecondChance implements ReplacementAlgorithm {
     @Override
     public Result execute(Process process, int timestamp) {
         Frame frame = new Frame(process);
-        if (frames.size() < frameSize) {
-            frames.add(frame);
-            return null;
+        boolean pageFault = true;
+        boolean isReplacement = false;
+        boolean writeToMemory = false;
+        if (frames.contains(frame)) {
+            pageFault = false;
+            frame.overwrite = false;
         } else {
-            if (frames.contains(frame)) {
-                frame.overwrite = false;
-                return null;
+            if (frames.size() < frameSize) {
+                frames.add(frame);
             } else {
                 boolean frameFound = false;
                 while (!frameFound) {
 
+                    currentProcess = currentProcess++ % frameSize;
                 }
             }
         }
-        return null;
+        return new Result(process, frames.indexOf(frame), pageFault, isReplacement, writeToMemory);
     }
 
     private class Frame {

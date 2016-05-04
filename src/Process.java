@@ -19,8 +19,7 @@ public class Process {
         if (o == null || getClass() != o.getClass()) return false;
 
         Process process = (Process) o;
-
-        return pid == process.pid;
+        return pid == process.pid && address/FrameLoader.PAGE_SIZE == address/FrameLoader.PAGE_SIZE;
 
     }
 
