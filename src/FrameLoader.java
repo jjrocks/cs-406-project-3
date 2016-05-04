@@ -6,6 +6,7 @@ public class FrameLoader {
 	int timeStamp = 0;
 	ArrayList<Process> processes;
 	ReplacementAlgorithm algorithm;
+    public static int PAGE_SIZE = 32;
 
     public FrameLoader(ReplacementAlgorithm algorithm, ArrayList<Process> processes) {
         this.algorithm = algorithm;

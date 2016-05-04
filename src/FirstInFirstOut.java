@@ -18,21 +18,26 @@ public class FirstInFirstOut implements ReplacementAlgorithm {
     @Override
     public Result execute(Process process, int timestamp) {
         Frame frame = new Frame(process, timestamp);
+        boolean pageFault;
+        boolean isReplacement = false;
+        boolean writeToMemory = false;
         if(frames.contains(frame)) {
-            System.out.println("no page fault. accessed frame " + frames.indexOf(frame));
-            return null;
+            pageFault = false;
         } else {
+            pageFault = true;
             if (frames.size() < frameSize) {
                 frames.add(frame);
-                System.out.println("loaded page#1 of process #" + process.getPid() + " with no replacement.");
             } else {
                 Frame oldestFrame = getLastUsedFrame();
-                System.out.println("loaded page #1 of processes #" + process.getPid() + " to frame #" + frames.indexOf(getLastUsedFrame()) + " with replacement");
+                isReplacement = true;
+                writeToMemory = oldestFrame.process.isWrite();
                 frames.remove(oldestFrame);
                 frames.add(frame);
             }
         }
-        return null;
+
+        Result result = new Result(process, frames.indexOf(frame), pageFault, isReplacement, writeToMemory);
+        return result;
     }
 
     private Frame getLastUsedFrame() {
