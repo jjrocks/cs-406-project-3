@@ -10,7 +10,7 @@ public class LeastRecentlyUsed implements ReplacementAlgorithm {
     int frameSize = 0;
     int currentProcess = 0;
 
-    public LeastRecentlyUsed(int frameSize) {
+    public LeastRecentlyUsed(int numFrames) {
         processes = new ArrayList<>();
         this.frameSize = frameSize;
         frames = new ArrayList<>(frameSize);

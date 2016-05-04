@@ -15,9 +15,8 @@ public class FrameLoader {
 
     public void run() {
 		for (Process process : processes) {
-			if (!algorithm.execute(process, timeStamp).pageFault) {
-				pageFaults += 1;
-			}
+			Result res = algorithm.execute(process, timeStamp);
+			System.out.println(res);
 			timeStamp++;
 		}
         System.out.println("Page faults: " + pageFaults);
@@ -51,9 +50,18 @@ public class FrameLoader {
 				return;
 			}
 
+			PAGE_SIZE = pageSize;
+			System.out.println("HERE, PAGESIZE IS " + PAGE_SIZE);
+
 			//get list of memory accesses
 			memAccesses = TextReader.processText(args[2]);
-            FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
+
+			//run
+
+			int numFrames = (int) Math.pow(2,11) / pageSize;
+
+            //FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
+            FrameLoader frameLoader = new FrameLoader(new Optimal(memAccesses, 3), memAccesses);
             frameLoader.run();
 
 		} 
