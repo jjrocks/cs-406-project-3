@@ -28,13 +28,13 @@ public class Result {
     public String toString() {
         String result =   "";
         if (pageFault) {
-            result = "loaded page #" + pageNumber + "to frame #" + frameNumber;
+            result = "loaded page #" + pageNumber + " to frame #" + frameNumber;
             result += (isReplacement) ? " with replacement" : " with no replacement";
-            result += (writeToMemory) ? "\nNeed to write frame #" + frameNumber + " to memory" : "";
+            result += (writeToMemory) ? "\n\tNeed to write frame #" + frameNumber + " to memory" : "";
         } else {
             result += "no page fault. accessed frame #" + frameNumber;
         }
-         result += "\nVirtual address: " + process.getAddress() + " -> Physical Address: " + physicalAddress;
+         result += "\n\tVirtual address: " + process.getAddress() + " -> Physical Address: " + physicalAddress;
         return result;
     }
 }

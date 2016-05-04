@@ -7,12 +7,12 @@ public class FirstInFirstOut implements ReplacementAlgorithm {
 
     ArrayList<Process> processes;
     ArrayList<Frame> frames;
-    int frameSize = 0;
+    int maxFrameSize = 0;
 
-    public FirstInFirstOut(int frameSize) {
+    public FirstInFirstOut(int maxFrameSize) {
         processes = new ArrayList<>();
-        this.frameSize = frameSize;
-        frames = new ArrayList<>(frameSize);
+        this.maxFrameSize = maxFrameSize;
+        frames = new ArrayList<>(maxFrameSize);
     }
 
     @Override
@@ -25,14 +25,13 @@ public class FirstInFirstOut implements ReplacementAlgorithm {
             pageFault = false;
         } else {
             pageFault = true;
-            if (frames.size() < frameSize) {
+            if (frames.size() < maxFrameSize) {
                 frames.add(frame);
             } else {
                 Frame oldestFrame = getLastUsedFrame();
                 isReplacement = true;
                 writeToMemory = oldestFrame.process.isWrite();
-                frames.remove(oldestFrame);
-                frames.add(frame);
+                frames.set(frames.indexOf(oldestFrame), frame);
             }
         }
 
