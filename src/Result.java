@@ -28,7 +28,7 @@ public class Result {
     public String toString() {
         String result =   "";
         if (pageFault) {
-            result = "loaded page #" + pageNumber + " to frame #" + frameNumber;
+            result = "loaded page #" + pageNumber + " of process #" + process.getPid() + " to frame #" + frameNumber;
             result += (isReplacement) ? " with replacement" : " with no replacement";
             result += (writeToMemory) ? "\n\tNeed to write frame #" + frameNumber + " to memory" : "";
         } else {
