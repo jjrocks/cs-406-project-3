@@ -43,8 +43,6 @@ public class FrameLoader {
 		ArrayList<Process> memAccesses;
 		if(args.length == 3) {
 
-			//TODO: select replacement algorithm
-
 			//get page size
 			try {
 				pageSize = Integer.parseInt(args[1]);
@@ -68,9 +66,37 @@ public class FrameLoader {
 
 			int numFrames = (int) Math.pow(2,11) / pageSize;
 
+			String alg = args[0];
+			FrameLoader frameLoader = null;
+			switch(alg) {
+				case "Optimal":
+					frameLoader = new FrameLoader(new Optimal(memAccesses, numFrames), memAccesses);
+					break;
+				case "FIFO":
+					frameLoader = new FrameLoader(new FirstInFirstOut(numFrames), memAccesses);
+					break;
+				case "LRU":
+					frameLoader = new FrameLoader(new LeastRecentlyUsed(numFrames), memAccesses);
+					break;
+				case "2Chance":
+					frameLoader = new FrameLoader(new SecondChance(numFrames), memAccesses);
+					break;
+				case "En2Chance":
+					frameLoader = new FrameLoader(new EnhancedSecondChance(numFrames), memAccesses);
+					break;
+				case "LFU":
+					frameLoader = new FrameLoader(new LeastFrequentlyUsed(numFrames), memAccesses);
+					break;
+			}
+
             //FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
             //FrameLoader frameLoader = new FrameLoader(new LeastFrequentlyUsed(numFrames), memAccesses);
-			FrameLoader frameLoader = new FrameLoader(new Optimal(memAccesses, numFrames), memAccesses);
+ 
+			if(frameLoader == null) {
+				System.out.println("Invalid algorithm choice. Valid options are: "+
+					"Optimal, FIFO, LRU, 2Chance, En2Chance, LFU");
+				return;
+			}
 
             frameLoader.run();
 
