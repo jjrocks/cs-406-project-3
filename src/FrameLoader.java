@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public class FrameLoader {
 
-	int pageFaults = 0;
 	int timeStamp = 0;
 	ArrayList<Process> processes;
 	ReplacementAlgorithm algorithm;
@@ -14,15 +13,22 @@ public class FrameLoader {
     }
 
     public void run() {
+
+    	int pageFaults = 0;
+		int numWrites = 0;
+
 		for (Process process : processes) {
             Result result = algorithm.execute(process, timeStamp);
             System.out.println(result);
 			if (result.pageFault) {
 				pageFaults += 1;
 			}
+			if(result.writeToMemory) {
+				numWrites += 1;
+			}
 			timeStamp++;
 		}
-        System.out.println("Page faults: " + pageFaults);
+        System.out.println("Number of page faults: " + pageFaults + ". Number of memory accesses: " + (pageFaults+numWrites));
 	}
 	
 	public static void main(String[] args) {
@@ -54,7 +60,6 @@ public class FrameLoader {
 			}
 
 			PAGE_SIZE = pageSize;
-			System.out.println("HERE, PAGESIZE IS " + PAGE_SIZE);
 
 			//get list of memory accesses
 			memAccesses = TextReader.processText(args[2]);
@@ -64,7 +69,8 @@ public class FrameLoader {
 			int numFrames = (int) Math.pow(2,11) / pageSize;
 
             //FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
-            FrameLoader frameLoader = new FrameLoader(new LeastFrequentlyUsed(3), memAccesses);
+            //FrameLoader frameLoader = new FrameLoader(new LeastFrequentlyUsed(numFrames), memAccesses);
+			FrameLoader frameLoader = new FrameLoader(new Optimal(memAccesses, numFrames), memAccesses);
 
             frameLoader.run();
 
