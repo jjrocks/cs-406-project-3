@@ -25,6 +25,9 @@ public class LeastRecentlyUsed implements ReplacementAlgorithm {
         if(frames.contains(frame)) {
             frames.get(frames.indexOf(frame)).lastUsed = currentProcess;
             pageFault = false;
+            if(process.isWrite()) {
+                frames.get(frames.indexOf(frame)).process.setWrite(true);
+            }
         } else {
             if (frames.size() < maxFrameSize) {
                 frames.add(frame);

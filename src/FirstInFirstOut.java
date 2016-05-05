@@ -23,6 +23,9 @@ public class FirstInFirstOut implements ReplacementAlgorithm {
         boolean writeToMemory = false;
         if(frames.contains(frame)) {
             pageFault = false;
+            if(process.isWrite()) {
+                frames.get(frames.indexOf(frame)).process.setWrite(true);
+            }
         } else {
             pageFault = true;
             if (frames.size() < maxFrameSize) {

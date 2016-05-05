@@ -22,6 +22,9 @@ public class SecondChance implements ReplacementAlgorithm {
         if (frames.contains(frame)) {
             pageFault = false;
             frame.overwrite = false;
+            if(process.isWrite()) {
+                frames.get(frames.indexOf(frame)).process.setWrite(true);
+            }
         } else {
             if (frames.size() < maxFrameSize) {
                 frames.add(frame);

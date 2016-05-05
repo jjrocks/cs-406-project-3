@@ -41,6 +41,10 @@ public class Process {
         return pageNumber;
     }
 
+    public void setWrite(boolean write) {
+        this.write = write;
+    }
+
     @Override
     public int hashCode() {
         return pid;

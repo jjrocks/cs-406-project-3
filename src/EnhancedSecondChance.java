@@ -23,7 +23,11 @@ public class EnhancedSecondChance implements ReplacementAlgorithm {
         boolean writeToMemory = false;
         if (frames.contains(frame)) {
             pageFault = false;
-            frame.overwriteWrite = false;
+            frame.overwriteRead = false;
+            if(process.isWrite()) {
+                frame.overwriteWrite = false;
+                frames.get(frames.indexOf(frame)).process.setWrite(true);
+            }
         } else {
             isReplacement = true;
             if (frames.size() < maxFrameSize) {
@@ -54,11 +58,13 @@ public class EnhancedSecondChance implements ReplacementAlgorithm {
                     return frame;
                 }
                 // At this point there are no 0,0 at all so we have to find the first frame.
-                if (loopCount == 2) {
+                if (loopCount > 0) {
                     return frame;
                 }
             } else {
-                frame.overwriteRead = true;
+                if (loopCount > 0) {
+                    frame.overwriteRead = true;
+                }
             }
             if (currentProcess == startProcess) {
                 loopCount++;
