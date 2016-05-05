@@ -1,5 +1,6 @@
 import java.util.*;
 import java.lang.*;
+import java.util.stream.Collectors;
 
 public class Optimal implements ReplacementAlgorithm {
 
@@ -16,6 +17,9 @@ public class Optimal implements ReplacementAlgorithm {
 	}
 
 	public Result execute(Process process, int timeStamp) {
+		String listString = frames.stream().map(Object::toString)
+                        .collect(Collectors.joining(", "));
+
 		curProcess++;
 
 		if(curProcess >= memAccesses.size()) {
@@ -25,19 +29,22 @@ public class Optimal implements ReplacementAlgorithm {
 		int proc_id = process.getPid();
 		int page_num = process.getPageNumber();
 
-		Frame frame = new Frame(proc_id, page_num);
+		Frame frame = new Frame(proc_id, page_num, process.isWrite());
 
 		int frameNum = frames.indexOf(frame);
 		int numFrames = frames.size();
 
 		if(frameNum > -1) {
 			//no page fault
+			if(process.isWrite()) {
+				frames.get(frameNum).write = true;
+			}
 			return new Result(process, frameNum, false, false, false);
 		}
 		else if(numFrames < maxFrames) {
 			//page fault, but there are empty frames
 			frames.add(frame);
-			return new Result(process, frameNum, true, false, false);
+			return new Result(process, numFrames, true, false, false);
 		}
 		else {
 			//page fault, and we must replace a frame
@@ -58,19 +65,22 @@ public class Optimal implements ReplacementAlgorithm {
 					farthestTimeUntilNextUse = nextUse;
 				}
 			}
+
+			boolean needWrite = frames.get(frameNumToReplace).write;
 			frames.set(frameNumToReplace, frame);
-			// TODO: This currently does not check for if the old frame needs to be written into memory.
-			return new Result(process, frames.indexOf(frame), true, true, true);
+			return new Result(process, frameNumToReplace, true, true, needWrite);
 		}
 	}
 
 	private class Frame {
 		public int procId;
 		public int pageNum;
+		public boolean write;
 
-		public Frame (int pid, int pg_num) {
+		public Frame (int pid, int pg_num, boolean w) {
 			procId = pid;
 			pageNum = pg_num;
+			write = w;
 		}
 
 		@Override
@@ -85,6 +95,13 @@ public class Optimal implements ReplacementAlgorithm {
             	return true;
             }
             return false;
+        }
+
+        @Override
+        public String toString() {
+        	String str = "["+procId+","+pageNum+",";
+        	str += write ? "W]" : "R]";
+        	return str;
         }
 	}
 }

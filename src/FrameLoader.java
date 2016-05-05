@@ -53,9 +53,19 @@ public class FrameLoader {
 				return;
 			}
 
+			PAGE_SIZE = pageSize;
+			System.out.println("HERE, PAGESIZE IS " + PAGE_SIZE);
+
 			//get list of memory accesses
 			memAccesses = TextReader.processText(args[2]);
-            FrameLoader frameLoader = new FrameLoader(new EnhancedSecondChance(2), memAccesses);
+
+			//run
+
+			int numFrames = (int) Math.pow(2,11) / pageSize;
+
+            //FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
+            FrameLoader frameLoader = new FrameLoader(new LeastFrequentlyUsed(3), memAccesses);
+
             frameLoader.run();
 
 		} 
