@@ -8,7 +8,6 @@ public class LeastRecentlyUsed implements ReplacementAlgorithm {
     ArrayList<Process> processes;
     ArrayList<Frame> frames;
     int maxFrameSize = 0;
-    int currentProcess = 0;
 
     public LeastRecentlyUsed(int numFrames) {
         processes = new ArrayList<>();
@@ -23,7 +22,7 @@ public class LeastRecentlyUsed implements ReplacementAlgorithm {
         boolean isReplacement = false;
         boolean writeToMemory = false;
         if(frames.contains(frame)) {
-            frames.get(frames.indexOf(frame)).lastUsed = currentProcess;
+            frames.get(frames.indexOf(frame)).lastUsed = timeStep;
             pageFault = false;
             if(process.isWrite()) {
                 frames.get(frames.indexOf(frame)).process.setWrite(true);

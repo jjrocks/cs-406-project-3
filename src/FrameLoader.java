@@ -63,8 +63,7 @@ public class FrameLoader {
 
 			int numFrames = (int) Math.pow(2,11) / pageSize;
 
-            //FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
-            FrameLoader frameLoader = new FrameLoader(new LeastFrequentlyUsed(3), memAccesses);
+            FrameLoader frameLoader = new FrameLoader(new SecondChance(4), memAccesses);
 
             frameLoader.run();
 
