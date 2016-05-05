@@ -2,7 +2,6 @@ import java.util.ArrayList;
 
 public class FrameLoader {
 
-	int pageFaults = 0;
 	int timeStamp = 0;
 	ArrayList<Process> processes;
 	ReplacementAlgorithm algorithm;
@@ -14,15 +13,22 @@ public class FrameLoader {
     }
 
     public void run() {
+
+    	int pageFaults = 0;
+		int numWrites = 0;
+
 		for (Process process : processes) {
             Result result = algorithm.execute(process, timeStamp);
-//            System.out.println(result);
+            System.out.println(result);
 			if (result.pageFault) {
 				pageFaults += 1;
 			}
+			if(result.writeToMemory) {
+				numWrites += 1;
+			}
 			timeStamp++;
 		}
-        System.out.println("Page faults: " + pageFaults);
+        System.out.println("Number of page faults: " + pageFaults + ". Number of memory accesses: " + (pageFaults+numWrites));
 	}
 	
 	public static void main(String[] args) {
@@ -36,8 +42,6 @@ public class FrameLoader {
 		int pageSize;
 		ArrayList<Process> memAccesses;
 		if(args.length == 3) {
-
-			//TODO: select replacement algorithm
 
 			//get page size
 			try {
@@ -54,7 +58,6 @@ public class FrameLoader {
 			}
 
 			PAGE_SIZE = pageSize;
-			System.out.println("HERE, PAGESIZE IS " + PAGE_SIZE);
 
 			//get list of memory accesses
 			memAccesses = TextReader.processText(args[2]);
@@ -63,7 +66,37 @@ public class FrameLoader {
 
 			int numFrames = (int) Math.pow(2,11) / pageSize;
 
-            FrameLoader frameLoader = new FrameLoader(new EnhancedSecondChance(4), memAccesses);
+			String alg = args[0];
+			FrameLoader frameLoader = null;
+			switch(alg) {
+				case "Optimal":
+					frameLoader = new FrameLoader(new Optimal(memAccesses, numFrames), memAccesses);
+					break;
+				case "FIFO":
+					frameLoader = new FrameLoader(new FirstInFirstOut(numFrames), memAccesses);
+					break;
+				case "LRU":
+					frameLoader = new FrameLoader(new LeastRecentlyUsed(numFrames), memAccesses);
+					break;
+				case "2Chance":
+					frameLoader = new FrameLoader(new SecondChance(numFrames), memAccesses);
+					break;
+				case "En2Chance":
+					frameLoader = new FrameLoader(new EnhancedSecondChance(numFrames), memAccesses);
+					break;
+				case "LFU":
+					frameLoader = new FrameLoader(new LeastFrequentlyUsed(numFrames), memAccesses);
+					break;
+			}
+
+            //FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
+            //FrameLoader frameLoader = new FrameLoader(new LeastFrequentlyUsed(numFrames), memAccesses);
+ 
+			if(frameLoader == null) {
+				System.out.println("Invalid algorithm choice. Valid options are: "+
+					"Optimal, FIFO, LRU, 2Chance, En2Chance, LFU");
+				return;
+			}
 
             frameLoader.run();
 
