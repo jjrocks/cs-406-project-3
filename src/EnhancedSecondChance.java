@@ -41,7 +41,6 @@ public class EnhancedSecondChance implements ReplacementAlgorithm {
 
             }
         }
-        printFrames();
         return new Result(process, frames.indexOf(frame), pageFault, isReplacement, writeToMemory);
     }
 
