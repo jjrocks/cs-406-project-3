@@ -16,7 +16,7 @@ public class FrameLoader {
     public void run() {
 		for (Process process : processes) {
             Result result = algorithm.execute(process, timeStamp);
-            System.out.println(result);
+//            System.out.println(result);
 			if (result.pageFault) {
 				pageFaults += 1;
 			}
@@ -63,7 +63,7 @@ public class FrameLoader {
 
 			int numFrames = (int) Math.pow(2,11) / pageSize;
 
-            FrameLoader frameLoader = new FrameLoader(new SecondChance(4), memAccesses);
+            FrameLoader frameLoader = new FrameLoader(new EnhancedSecondChance(4), memAccesses);
 
             frameLoader.run();
 

@@ -17,7 +17,6 @@ public class SecondChance implements ReplacementAlgorithm {
     @Override
     public Result execute(Process process, int timestamp) {
         Frame frame = new Frame(process);
-        frame.overwrite = true;
         boolean pageFault = true;
         boolean isReplacement = false;
         boolean writeToMemory = false;
@@ -31,13 +30,14 @@ public class SecondChance implements ReplacementAlgorithm {
             if (frames.size() < maxFrameSize) {
                 frames.add(frame);
                 currentProcess = frames.indexOf(frame);
+                currentProcess = (currentProcess + 1) % maxFrameSize;
             } else {
                 boolean frameFound = false;
                 isReplacement = true;
                 while (!frameFound) {
                     if (frames.get(currentProcess).overwrite) {
-                        writeToMemory = frames.remove(currentProcess).process.isWrite();
-                        frames.add(frame);
+                        writeToMemory = frames.get(currentProcess).process.isWrite();
+                        frames.set(currentProcess, frame);
                         frameFound = true;
                     } else {
                         frames.get(currentProcess).overwrite = true;

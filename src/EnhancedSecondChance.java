@@ -23,23 +23,25 @@ public class EnhancedSecondChance implements ReplacementAlgorithm {
         boolean writeToMemory = false;
         if (frames.contains(frame)) {
             pageFault = false;
-            frame.overwriteRead = false;
+            frames.get(frames.indexOf(frame)).overwriteRead = false;
             if(process.isWrite()) {
-                frame.overwriteWrite = false;
+                frames.get(frames.indexOf(frame)).overwriteWrite = false;
                 frames.get(frames.indexOf(frame)).process.setWrite(true);
             }
         } else {
-            isReplacement = true;
             if (frames.size() < maxFrameSize) {
                 frames.add(frame);
+                currentProcess = frames.indexOf(frame);
                 currentProcess = (currentProcess + 1) % maxFrameSize;
             } else {
+                isReplacement = true;
                 Frame oldFrame = getLeastUsedFrame();
                 writeToMemory = oldFrame.process.isWrite();
                 frames.set(frames.indexOf(oldFrame), frame);
 
             }
         }
+        printFrames();
         return new Result(process, frames.indexOf(frame), pageFault, isReplacement, writeToMemory);
     }
 
@@ -47,13 +49,16 @@ public class EnhancedSecondChance implements ReplacementAlgorithm {
         boolean frameFound = false;
         int startProcess = currentProcess;
         Frame oldestFrame = null;
-        int loopCount = 0;
+        int loopCount = -1;
 
         // Our order goes neither written or read, written but not read, read but not written, written and read
-        while(!frameFound) {
+        while (!frameFound) {
             Frame frame = frames.get(currentProcess);
+            if (currentProcess == startProcess) {
+                loopCount++;
+            }
             currentProcess = (currentProcess + 1) % maxFrameSize;
-            if(frame.overwriteRead ) {
+            if (frame.overwriteRead) {
                 if (frame.overwriteWrite) {
                     return frame;
                 }
@@ -66,11 +71,21 @@ public class EnhancedSecondChance implements ReplacementAlgorithm {
                     frame.overwriteRead = true;
                 }
             }
-            if (currentProcess == startProcess) {
-                loopCount++;
-            }
         }
         return oldestFrame;
+    }
+
+    private void printFrames() {
+        String  toPrint = "[";
+        for (int i = 0; i < frames.size() ; i++) {
+            Frame frame = frames.get(i);
+            toPrint += frame.process.getPid() + "." + frame.process.getPageNumber();
+            toPrint += (frame.overwriteRead) ? "" : "R";
+            toPrint += (frame.overwriteWrite) ? "" : "W";
+            toPrint += (i == frames.size() - 1) ? "" : ", ";
+        }
+        toPrint += "]";
+        System.out.println(toPrint);
     }
 
 
