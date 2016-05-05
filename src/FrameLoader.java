@@ -15,16 +15,11 @@ public class FrameLoader {
 
     public void run() {
 		for (Process process : processes) {
-<<<<<<< HEAD
-			Result res = algorithm.execute(process, timeStamp);
-			System.out.println(res);
-=======
             Result result = algorithm.execute(process, timeStamp);
             System.out.println(result);
 			if (result.pageFault) {
 				pageFaults += 1;
 			}
->>>>>>> 0ca39a18047d2ef80142930fe6f78e43f01465ec
 			timeStamp++;
 		}
         System.out.println("Page faults: " + pageFaults);
@@ -69,7 +64,7 @@ public class FrameLoader {
 			int numFrames = (int) Math.pow(2,11) / pageSize;
 
             //FrameLoader frameLoader = new FrameLoader(new LeastRecentlyUsed(2), memAccesses);
-            FrameLoader frameLoader = new FrameLoader(new Optimal(memAccesses, 3), memAccesses);
+            FrameLoader frameLoader = new FrameLoader(new LeastFrequentlyUsed(3), memAccesses);
 
             frameLoader.run();
 
