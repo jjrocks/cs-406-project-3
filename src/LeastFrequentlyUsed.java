@@ -16,7 +16,7 @@ public class LeastFrequentlyUsed implements ReplacementAlgorithm {
         int proc_id = process.getPid();
         int page_num = process.getPageNumber();
 
-        Frame frame = new Frame(proc_id, page_num, process.isWrite());
+        Frame frame = new Frame(proc_id, page_num, process.isWrite(), timeStep);
 
         int frameNum = frames.indexOf(frame);
         int numFrames = frames.size();
@@ -28,6 +28,7 @@ public class LeastFrequentlyUsed implements ReplacementAlgorithm {
                 frames.get(frameNum).write = true;
             }
             frames.get(frameNum).timesUsed += 1;
+            frames.get(frameNum).lastUsed = timeStep;
             return new Result(process, frameNum, false, false, false);
 
         }
@@ -42,11 +43,14 @@ public class LeastFrequentlyUsed implements ReplacementAlgorithm {
             //page fault, so we gotta find what to replace
             int frameNumToReplace = -1;
             int leastOftenUsed = Integer.MAX_VALUE;
+            int lastUsed = Integer.MAX_VALUE;
             for(int i=0; i<numFrames; i++) {
                 Frame f = frames.get(i);
-                if(f.timesUsed < leastOftenUsed) {
+                if(f.timesUsed < leastOftenUsed || 
+                    (f.timesUsed == leastOftenUsed && f.lastUsed < lastUsed)) {
                     frameNumToReplace=i;
                     leastOftenUsed = f.timesUsed;
+                    lastUsed = f.lastUsed;
                 }
             }
 
@@ -62,12 +66,14 @@ public class LeastFrequentlyUsed implements ReplacementAlgorithm {
         public int pageNum;
         public boolean write;
         public int timesUsed;
+        public int lastUsed; //this is used to break ties for tiemsUsed
 
-        public Frame (int pid, int pg_num, boolean w) {
+        public Frame (int pid, int pg_num, boolean w, int timeUsed) {
             procId = pid;
             pageNum = pg_num;
             write = w;
             timesUsed = 1;
+            lastUsed = timeUsed;
         }
 
         @Override
@@ -88,7 +94,7 @@ public class LeastFrequentlyUsed implements ReplacementAlgorithm {
         public String toString() {
             String str = "["+procId+","+pageNum+",";
             str += write ? "W]" : "R";
-            str += ","+timesUsed+"]";
+            str += ","+timesUsed+","+lastUsed+"]";
             return str;
         }
     }
